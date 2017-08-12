@@ -23,24 +23,28 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(__dirname + '/public'));
 
 
-app.get('/', 
+app.get('/',
 function(req, res) {
   res.render('index');
+  console.log("GET1", req.url);
 });
 
-app.get('/create', 
+app.get('/create',
 function(req, res) {
   res.render('index');
+  console.log("GET2", req.url);
 });
 
-app.get('/links', 
+app.get('/links',
 function(req, res) {
+  console.log("GET3", req.url);
   Links.reset().fetch().then(function(links) {
     res.status(200).send(links.models);
   });
 });
 
-app.post('/links', 
+
+app.post('/links',
 function(req, res) {
   var uri = req.body.url;
 
@@ -76,7 +80,18 @@ function(req, res) {
 // Write your authentication routes here
 /************************************************************/
 
+app.post('/login',
+function(req, res){
+  console.log("REQUEST in /login:", req.body);
+  res.status(201).send("TBD");
+});
 
+
+app.get('/login',
+  function(req, res){
+    console.log("GET REQUEST LOGIN:", req.url)
+    res.render('login');
+});
 
 /************************************************************/
 // Handle the wildcard route last - if all other routes fail
