@@ -41,15 +41,14 @@ db.knex.schema.hasTable('clicks').then(function(exists) {
 /************************************************************/
 
 // connects to db and check to see if 'users' tables exists
-db.knex.schema.hasTable('users').then(function(exists){
+db.knex.schema.hasTable('users').then(function(exists) {
   if (!exists) {
     // create table
-    db.knex.schema.createTable('users', function(user){
+    db.knex.schema.createTable('users', function(user) {
       user.string('username');
       user.string('password');
-    })
-    .then(function(table){
-      console.log("CREATED TABLE:", table);
+    }).then(function(table) {
+      console.log('CREATED TABLE:', table);
     });
   }
 });
