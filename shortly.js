@@ -92,20 +92,24 @@ app.post('/links',
 
 app.post('/login',
   function(req, res) {
-    var username = req.body.username;
-    var password = req.body.password;
-
-
-    if (username === 'Phillip' && password === 'Phillip') {
-
-      //creates a new session
-      req.session.regenerate(function() {
-        req.session.user = username;
-        res.redirect('/');//main page
-      });
-    } else {
-      res.redirect('/login');
-    }
+    // query the database for a username
+    // get the password
+    db.knex('users').where('username', '=', req.body.username)
+    .then(function(query) {
+      if (query[0]) {
+        if (query[0].password === req.body.password) {
+          // saving user to session
+          req.session.regenerate(function() {
+            req.session.user = req.body.username;
+            res.redirect('/');//main page
+          });
+        } else {
+          res.redirect('/login');
+        }
+      } else {
+        res.redirect('/login');
+      }
+    });
   });
 
 app.get('/login',
@@ -128,14 +132,17 @@ app.post('/signup',
     }).save();
 
     req.session.regenerate(function() {
-    req.session.user = req.body.username;
-    res.redirect('/');
+      req.session.user = req.body.username;
+      res.redirect('/');
     });
-
-    //res.status(201).send('TBD');
   });
 
-
+app.get('/logout',
+  function(req, res) {
+    req.session.destroy(function(err) {
+      res.redirect('/');
+    });
+  });
 
 /************************************************************/
 // Handle the wildcard route last - if all other routes fail
@@ -161,9 +168,6 @@ app.get('/*', function(req, res) {
     }
   });
 });
-
-
-
 
 
 
